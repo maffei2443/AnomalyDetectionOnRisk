@@ -4,7 +4,7 @@
 @EXPLICIT
 https://conda.anaconda.org/r/linux-64/_r-mutex-1.0.0-anacondar_1.tar.bz2
 https://repo.continuum.io/pkgs/main/linux-64/alabaster-0.7.10-py36h306e16b_0.tar.bz2
-https://conda.binstar.org/bashtage/linux-64/arch-4.1-np112py36_0.tar.bz2
+# https://conda.binstar.org/bashtage/linux-64/arch-4.1-np112py36_0.tar.bz2 # Link quebrado
 https://repo.continuum.io/pkgs/main/linux-64/asn1crypto-0.24.0-py36_0.tar.bz2
 https://repo.continuum.io/pkgs/main/linux-64/babel-2.5.3-py36_0.tar.bz2
 https://repo.continuum.io/pkgs/main/linux-64/binutils_impl_linux-64-2.28.1-had2808c_3.tar.bz2

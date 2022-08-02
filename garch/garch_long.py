@@ -1,14 +1,16 @@
+# from calendar import THURSDAY
+# from tracemalloc import Trace
 import numpy as np
 import matplotlib.pyplot as plt
 from random import randint, uniform
-import math
 from numpy import genfromtxt
-
+from pathlib import Path
+IMG_PATH=Path('img')
 
 '''
 This program creates time series. The time series can be created with varying length.
-The time series are inserted with four types of anomalies. Additive Level Outliers, Level Shift Outliers, Trancient Change Outliers and Local Trend Outliers.
-
+The time series are inserted with four types of anomalies. 
+Additive Level Outliers, Level Shift Outliers, Trancient Change Outliers and Local Trend Outliers.
 '''
 
 def getData(datatype="D1", size="100"):
@@ -79,7 +81,7 @@ def fixD1():
         plt.plot(x, time_serie)
         plt.xlabel('Days')
         plt.ylabel('Price')    
-        plt.show()
+        plt.close()
 
         plt.plot(x, time_serie_polluted, 'r')
         plt.plot(x, time_serie)
@@ -91,7 +93,7 @@ def fixD1():
 
         plt.xlabel('Days')
         plt.ylabel('Price')     
-        plt.show()
+        plt.close()
         
 
         #Saving
@@ -211,7 +213,7 @@ def return_to_price_ARMA_2_2(ϵ):
 
 
     #plt.plot(ys_price)
-    #plt.show()
+    #plt.close()
 
     return ys_price[201:]
 
@@ -355,7 +357,6 @@ def add_anomaly_SALO(ts, tr, t, magnitude = 5):
 def genD1(number_of_series=500, length_of_series=5000): 
 
 
-
     for i in range(number_of_series):
         print("Making serie number: " + str(i))
         #Generating 
@@ -402,7 +403,7 @@ def genD1(number_of_series=500, length_of_series=5000):
         #plt.plot(x, time_serie)
         #plt.xlabel('Days')
         #plt.ylabel('Price')    
-        #plt.show()
+        #plt.close()
 
         plt.plot(x, time_serie_polluted, )
         #plt.plot(x, time_serie)
@@ -411,9 +412,17 @@ def genD1(number_of_series=500, length_of_series=5000):
         was_anomaly = False
         while truth_index < len(truth):
             if truth[truth_index] > 0:
-                while truth[truth_index] > 0 or truth_index == len(time_serie):
+                flag = truth[truth_index] > 0 or truth_index == len(time_serie)
+                while flag:
                     anom_len_counter += 1
                     truth_index += 1
+                    try:
+                      flag = (
+                        truth[truth_index] > 0 
+                        or truth_index == len(time_serie)
+                      )
+                    except:
+                      flag = False
                 x_anom = range(truth_index-anom_len_counter-1, truth_index)
                 plt.fill_between(x_anom, -61, 61, facecolor='red', alpha=0.4)
                 anom_len_counter=0
@@ -422,8 +431,9 @@ def genD1(number_of_series=500, length_of_series=5000):
 
 
         plt.xlabel('Days')
-        plt.ylabel('Price')     
-        plt.show()
+        plt.ylabel('Price')
+        plt.savefig(IMG_PATH/f'd1/{i}.png')
+        plt.close()
         
 
         #Saving
@@ -450,7 +460,6 @@ def genD2(number_of_series=500, length_of_series=5000):
         ω = 0.2
         α = [0.2]
         β = [0.6]
-        ϵ = garch(ω, α, β, length_of_series)
         freq = 1/1000
         var_history_length = 20
 
@@ -494,9 +503,15 @@ def genD2(number_of_series=500, length_of_series=5000):
         was_anomaly = False
         while truth_index < len(truth):
             if truth[truth_index] > 0:
-                while truth[truth_index] > 0 or truth_index == len(time_serie_VaR):
+                flag = truth[truth_index] > 0 or truth_index == len(time_serie_VaR)
+                while flag:
                     anom_len_counter += 1
                     truth_index += 1
+                    try:
+                      flag = truth[truth_index] > 0 or truth_index == len(time_serie_VaR)
+                    except Exception as e:
+                      print(e)
+                      flag = False
                 x_anom = range(truth_index-anom_len_counter-1, truth_index)
                 plt.fill_between(x_anom, -61, 61, facecolor='red', alpha=0.4)
                 anom_len_counter=0
@@ -508,7 +523,8 @@ def genD2(number_of_series=500, length_of_series=5000):
 
         plt.xlabel('Days')
         plt.ylabel('Value-at-Risk') 
-        plt.show()
+        plt.savefig(IMG_PATH/f'd2/{i}.png')
+        plt.close()
         
 
         #Saving
@@ -577,9 +593,15 @@ def genD4(number_of_series=500, length_of_series=5000):
         was_anomaly = False
         while truth_index < len(truth):
             if truth[truth_index] > 0:
-                while truth[truth_index] > 0 or truth_index == len(time_serie_returns):
+                flag=truth[truth_index] > 0 or truth_index == len(time_serie_returns)
+                while flag:
                     anom_len_counter += 1
                     truth_index += 1
+                    try:
+                      flag=truth[truth_index] > 0 or truth_index == len(time_serie_returns)
+                    except Exception as e:
+                      print(e)
+                      flag=False 
                 x_anom = range(truth_index-anom_len_counter-1, truth_index)
                 plt.fill_between(x_anom, -61, 61, facecolor='red', alpha=0.4)
                 anom_len_counter=0
@@ -590,8 +612,9 @@ def genD4(number_of_series=500, length_of_series=5000):
         
 
         plt.xlabel('Days')
-        plt.ylabel('Price') 
-        plt.show()
+        plt.ylabel('Price')
+        plt.savefig(IMG_PATH/f'd4/{i}.png')
+        plt.close()
         
 
         #Saving
@@ -639,14 +662,14 @@ def demonstartiveplots():
 
     plt.xlabel('Days')
     plt.ylabel('Value-at-Risk')     
-    plt.show()
+    plt.close()
     
 
     plt.plot(x, time_serie_polluted, 'r')
     plt.plot(x, time_serie)
     plt.xlabel('Days')
     plt.ylabel('Value-at-Risk')     
-    plt.show()    
+    plt.close()    
 
 
 
@@ -659,11 +682,11 @@ if __name__ == "__main__":
 
     
     print("Generating D1 of serie length 5000")
-    genD1(500, 5000)
+    genD1(20, 5000)
     print("Generating D2 of serie length 5000")
-    genD2(500, 5000)
+    genD2(20, 5000)
     print("Generating D4 of serie length 5000")
-    genD4(500, 5000)
+    genD4(20, 5000)
     
 
 

@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 from numpy import genfromtxt
 import datetime
 
+import aux as A
+import os
+os.makedirs(A.OUTPUT_IMG/'ewma', exist_ok=True,)
 
 #The EWMA class is capable of fetching data, performing anomaly detection on said data, calculates the score and plot the result.
 class ewma(): 
@@ -231,8 +234,11 @@ class ewma():
             plt.axvline(x=int(len(D[sample_nr])*0.1), color='grey')
 
             plt.title("EWMA on anomlies that are present in this serie: " + str(np.unique(at)))
-
             plt.legend(handles=[line_mean, line_actual, line_unpolluted, dot_wrong, dot_actual, dot_correct])
-            plt.show()
+
+            plt.show(block=False)
+            plt.savefig(A.OUTPUT_IMG/'ewma'/f'{sample_nr}.png')
+            plt.close()
+
 
     

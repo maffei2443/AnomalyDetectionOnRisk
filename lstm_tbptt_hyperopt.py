@@ -1,26 +1,22 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import time
-import re
-import os
-import csv
 import tensorflow as tf
 import datetime
 from scipy.stats import norm
-from keras.layers.core import Dense, Activation, Dropout
-from keras.layers.recurrent import LSTM
+from keras.layers.core import Dense, Dropout
+from keras.layers import LSTM
 from keras.layers import CuDNNLSTM
 from keras.models import Sequential
 from keras.optimizers import Adam
-from numpy import arange, sin, pi, random, genfromtxt
-from pandas import concat
-from pandas import DataFrame
 
 
 
 
-#The LSTM class is capable of fetching data, performing anomaly detection on said data, calculates the score and plot the result.
-#The LSTM is run sequentially and is updated using Truncated Backpropagation Through Time. Searches for hyperparameters by performing a gridsearch on the first serie in the dataset.
+#The LSTM class is capable of fetching data, performing anomaly detection on said data, 
+# calculates the score and plot the result.
+
+#The LSTM is run sequentially and is updated using Truncated Backpropagation Through Time.
+# Searches for hyperparameters by performing a gridsearch on the first serie in the dataset.
 
 class lstm_tbptt(): 
     
@@ -47,15 +43,15 @@ class lstm_tbptt():
                 actuals =[0]
                 model = Sequential()
                 if(len(neuron_setup) == 1):
-                    model.add(CuDNNLSTM(neuron_setup[0], batch_input_shape=(1, timesteps, features), stateful=True))
+                    model.add(LSTM(neuron_setup[0], batch_input_shape=(1, timesteps, features), stateful=True))
                 else:
-                    model.add(CuDNNLSTM(neuron_setup[0], batch_input_shape=(1, timesteps, features), return_sequences=True, stateful=True))
+                    model.add(LSTM(neuron_setup[0], batch_input_shape=(1, timesteps, features), return_sequences=True, stateful=True))
                 for layer in range(1, len(neuron_setup)):
                     model.add(Dropout(0.2))
                     if layer == (len(neuron_setup)-1):
-                        model.add(CuDNNLSTM(neuron_setup[layer], stateful=True))
+                        model.add(LSTM(neuron_setup[layer], stateful=True))
                     else:
-                        model.add(CuDNNLSTM(neuron_setup[layer], return_sequences=True, stateful=True))
+                        model.add(LSTM(neuron_setup[layer], return_sequences=True, stateful=True))
 
                 model.add(Dense(1))
 
